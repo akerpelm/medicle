@@ -2,47 +2,21 @@ import React, { useContext } from "react";
 import { AppContext } from "../App";
 
 const Key = ({ input: keyPress, isLargeKey }) => {
-  const { board, setBoard, currentAttempt, setCurrentAttempt } =
+  const { handleLetterSelect, handleDelete, handleEnter } =
     useContext(AppContext);
 
   const handleKeyPress = () => {
-    let { attempt, position } = currentAttempt;
-    const currentBoardState = [...board];
-
     switch (keyPress.toLowerCase()) {
       case "enter":
-        if (position !== 5) return;
-        setCurrentAttempt({
-          ...currentAttempt,
-          attempt: ++attempt,
-          position: 0,
-        });
+        handleEnter();
         break;
-
       case "delete":
-        if (position === 0) return;
-        currentBoardState[attempt][position - 1] = "";
-        setBoard(currentBoardState);
-        setCurrentAttempt({ ...currentAttempt, position: --position });
+        handleDelete();
         break;
-
       default:
-        if (position > 4) return;
-        currentBoardState[attempt][position] = keyPress;
-        setBoard(currentBoardState);
-        setCurrentAttempt({ ...currentAttempt, position: ++position });
+        handleLetterSelect(keyPress);
         break;
     }
-    // if (keyPress.toLowerCase() === "enter") {
-    //   if (position !== 5) return;
-    //   setCurrentAttempt({ ...currentAttempt, attempt: ++attempt, position: 0 });
-    // } else {
-    //   if (position > 4) return;
-
-    //   currentBoardState[attempt][position] = keyPress;
-    //   setBoard(currentBoardState);
-    //   setCurrentAttempt({ ...currentAttempt, position: ++position });
-    // }
   };
   return (
     <div
