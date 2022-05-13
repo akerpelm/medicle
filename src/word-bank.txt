@@ -2,3 +2,5 @@ digit
 nares
 pinna
 gland
+liver
+right

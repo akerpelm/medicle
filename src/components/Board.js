@@ -2,8 +2,6 @@ import React from "react";
 import Letter from "./Letter";
 
 const Board = () => {
-  const lettersInWord = [0, 1, 2, 3, 4];
-
   const handleRowGeneration = (attempt, idx) => {
     return (
       <div className="row" key={idx}>
@@ -18,7 +16,7 @@ const Board = () => {
 
   return (
     <div className="board">
-      {[0, 1, 2, 3, 4, 5].map((iteration, idx) => {
+      {[0, 1, 2, 3, 4].map((iteration, idx) => {
         return handleRowGeneration(iteration, idx);
       })}
     </div>

@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { AppContext } from "../App";
 
-const Key = ({ input: keyPress, isLargeKey }) => {
+const Key = ({ input: keyPress, isLargeKey, isDisabledKey }) => {
   const { handleLetterSelect, handleDelete, handleEnter } =
     useContext(AppContext);
 
@@ -21,7 +21,7 @@ const Key = ({ input: keyPress, isLargeKey }) => {
   return (
     <div
       className="key"
-      id={isLargeKey && "large-key"}
+      id={isLargeKey ? "large-key" : isDisabledKey && "disabled"}
       onClick={handleKeyPress}
     >
       {keyPress}

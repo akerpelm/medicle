@@ -1,4 +1,4 @@
-import * as wordBank from "../../word-bank.txt";
+import wordBank from "../../word-bank.txt";
 export const boardMatrix = [
   ["", "", "", "", ""],
   ["", "", "", "", ""],
@@ -9,14 +9,15 @@ export const boardMatrix = [
 ];
 
 export const generateWordSet = async () => {
-  console.log(wordBank, "wb");
   let wordSet;
+  let wordOfTheDay;
   await fetch(wordBank)
-    .then((resp) => resp.text)
+    .then((response) => response.text())
     .then((res) => {
-      // console.log(res.split("\n"), "r");
       const wordArr = res.split("\n");
+      wordOfTheDay = wordArr[Math.floor(Math.random() * wordArr.length)];
+      console.log(wordOfTheDay);
       wordSet = new Set(wordArr);
     });
-  return { wordSet };
+  return { wordSet, wordOfTheDay };
 };

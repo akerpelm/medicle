@@ -2,6 +2,7 @@ import { useState, createContext, useEffect } from "react";
 
 import "./App.css";
 import Board from "./components/Board";
+import GameOver from "./components/GameOver";
 import Keyboard from "./components/Keyboard";
 import { boardMatrix, generateWordSet } from "./components/util/boardUtil.js";
 
@@ -9,16 +10,23 @@ export const AppContext = createContext();
 
 function App() {
   const wordTracker = { attempt: 0, position: 0 };
+  const [correctWord, setCorrectWord] = useState("");
   const [board, setBoard] = useState(boardMatrix);
   const [currentAttempt, setCurrentAttempt] = useState(wordTracker);
-
-  const correctWord = "RIGHT";
+  const [wordSet, setWordSet] = useState(new Set());
+  const [usedLetters, setUsedLetters] = useState([]);
+  const [gameOver, setGameOver] = useState({
+    gameHasEnded: false,
+    correctWordFound: false,
+  });
 
   useEffect(() => {
-    generateWordSet().then((words) => {
-      console.log(words);
+    generateWordSet().then(({ wordSet, wordOfTheDay }) => {
+      setWordSet(wordSet);
+      setCorrectWord(wordOfTheDay);
     });
   }, []);
+
   let { attempt, position } = currentAttempt;
   const currentBoardState = [...board];
 
@@ -26,23 +34,42 @@ function App() {
     if (position > 4) return;
     currentBoardState[attempt][position] = keyPress;
     setBoard(currentBoardState);
-    setCurrentAttempt({ ...currentAttempt, position: ++position });
+    setCurrentAttempt({ ...currentAttempt, position: position + 1 });
   };
 
   const handleDelete = () => {
     if (position === 0) return;
     currentBoardState[attempt][position - 1] = "";
     setBoard(currentBoardState);
-    setCurrentAttempt({ ...currentAttempt, position: --position });
+    setCurrentAttempt({ ...currentAttempt, position: position - 1 });
   };
 
   const handleEnter = () => {
     if (position !== 5) return;
-    setCurrentAttempt({
-      ...currentAttempt,
-      attempt: ++attempt,
-      position: 0,
-    });
+
+    let currentWord = "";
+    for (let i = 0; i < 5; i++) {
+      currentWord += board[attempt][i].toLowerCase();
+    }
+    if (wordSet.has(currentWord.toLowerCase())) {
+      setCurrentAttempt({
+        ...currentAttempt,
+        attempt: attempt + 1,
+        position: 0,
+      });
+    } else {
+      alert("Word not found"); //toast?
+    }
+    if (currentWord === correctWord) {
+      console.log("EQUALS");
+      setGameOver({ gameHasEnded: true, correctWordFound: true });
+      return;
+    }
+    console.log(attempt);
+    if (attempt === 5) {
+      setGameOver({ gameHasEnded: true, correctWordFound: false });
+    }
+    //need to largely expand word set.
   };
 
   return (
@@ -60,12 +87,16 @@ function App() {
           handleDelete,
           handleEnter,
           correctWord,
+          usedLetters,
+          setUsedLetters,
+          gameOver,
+          setGameOver,
         }}
       >
         <div className="game-container">
           <Board />
           ----
-          <Keyboard />
+          {gameOver.gameHasEnded ? <GameOver /> : <Keyboard />}
         </div>
       </AppContext.Provider>
     </div>

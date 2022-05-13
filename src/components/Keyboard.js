@@ -3,7 +3,7 @@ import { AppContext } from "../App";
 import Key from "./Key";
 
 const Keyboard = () => {
-  const { handleLetterSelect, handleEnter, handleDelete } =
+  const { handleLetterSelect, handleEnter, handleDelete, usedLetters } =
     useContext(AppContext);
 
   const handleKeyPressEvent = useCallback(({ key: eventKey }) => {
@@ -43,7 +43,7 @@ const Keyboard = () => {
         {keyboardLine1.map((k, idx) => {
           return (
             <div key={idx}>
-              <Key input={k} />
+              <Key input={k} isDisabledKey={usedLetters.includes(k)} />
             </div>
           );
         })}
@@ -52,7 +52,7 @@ const Keyboard = () => {
         {keyboardLine2.map((k, idx) => {
           return (
             <div key={idx}>
-              <Key input={k} />
+              <Key input={k} isDisabledKey={usedLetters.includes(k)} />
             </div>
           );
         })}
