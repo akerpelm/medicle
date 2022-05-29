@@ -10,10 +10,11 @@ export const AppContext = createContext();
 
 function App() {
   const wordTracker = { attempt: 0, position: 0 };
-  const [correctWord, setCorrectWord] = useState("");
+
   const [board, setBoard] = useState(boardMatrix);
   const [currentAttempt, setCurrentAttempt] = useState(wordTracker);
   const [wordSet, setWordSet] = useState(new Set());
+  const [correctWord, setCorrectWord] = useState("");
   const [usedLetters, setUsedLetters] = useState([]);
   const [gameOver, setGameOver] = useState({
     gameHasEnded: false,
@@ -28,10 +29,10 @@ function App() {
   }, []);
 
   let { attempt, position } = currentAttempt;
-  const currentBoardState = [...board];
 
   const handleLetterSelect = (keyPress) => {
     if (position > 4) return;
+    const currentBoardState = [...board];
     currentBoardState[attempt][position] = keyPress;
     setBoard(currentBoardState);
     setCurrentAttempt({ ...currentAttempt, position: position + 1 });
@@ -39,6 +40,7 @@ function App() {
 
   const handleDelete = () => {
     if (position === 0) return;
+    const currentBoardState = [...board];
     currentBoardState[attempt][position - 1] = "";
     setBoard(currentBoardState);
     setCurrentAttempt({ ...currentAttempt, position: position - 1 });
@@ -53,7 +55,6 @@ function App() {
     }
     if (wordSet.has(currentWord.toLowerCase())) {
       setCurrentAttempt({
-        ...currentAttempt,
         attempt: attempt + 1,
         position: 0,
       });
@@ -61,11 +62,9 @@ function App() {
       alert("Word not found"); //toast?
     }
     if (currentWord === correctWord) {
-      console.log("EQUALS");
       setGameOver({ gameHasEnded: true, correctWordFound: true });
       return;
     }
-    console.log(attempt);
     if (attempt === 5) {
       setGameOver({ gameHasEnded: true, correctWordFound: false });
     }
@@ -95,7 +94,6 @@ function App() {
       >
         <div className="game-container">
           <Board />
-          ----
           {gameOver.gameHasEnded ? <GameOver /> : <Keyboard />}
         </div>
       </AppContext.Provider>

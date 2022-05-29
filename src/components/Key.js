@@ -1,12 +1,17 @@
 import React, { useContext } from "react";
 import { AppContext } from "../App";
 
-const Key = ({ input: keyPress, isLargeKey, isDisabledKey }) => {
-  const { handleLetterSelect, handleDelete, handleEnter } =
-    useContext(AppContext);
+const Key = ({ input, isLargeKey, isDisabledKey }) => {
+  const {
+    handleLetterSelect,
+    handleDelete,
+    handleEnter,
+    gameOver: { gameHasEnded },
+  } = useContext(AppContext);
 
-  const handleKeyPress = () => {
-    switch (keyPress.toLowerCase()) {
+  const handleInput = () => {
+    if (gameHasEnded) return;
+    switch (input.toLowerCase()) {
       case "enter":
         handleEnter();
         break;
@@ -14,7 +19,7 @@ const Key = ({ input: keyPress, isLargeKey, isDisabledKey }) => {
         handleDelete();
         break;
       default:
-        handleLetterSelect(keyPress);
+        handleLetterSelect(input);
         break;
     }
   };
@@ -22,9 +27,9 @@ const Key = ({ input: keyPress, isLargeKey, isDisabledKey }) => {
     <div
       className="key"
       id={isLargeKey ? "large-key" : isDisabledKey && "disabled"}
-      onClick={handleKeyPress}
+      onClick={handleInput}
     >
-      {keyPress}
+      {input}
     </div>
   );
 };

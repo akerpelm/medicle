@@ -3,28 +3,40 @@ import { AppContext } from "../App";
 import Key from "./Key";
 
 const Keyboard = () => {
-  const { handleLetterSelect, handleEnter, handleDelete, usedLetters } =
-    useContext(AppContext);
+  const {
+    handleLetterSelect,
+    handleEnter,
+    handleDelete,
+    usedLetters,
+    currentAttempt,
+    gameOver: { gameHasEnded },
+  } = useContext(AppContext);
 
-  const handleKeyPressEvent = useCallback(({ key: eventKey }) => {
-    switch (eventKey.toLowerCase()) {
-      case "enter":
-        handleEnter();
-        break;
-      case "backspace":
-        handleDelete();
-        break;
-      default:
-        [...keyboardLine1, ...keyboardLine2, ...keyboardLine3].forEach(
-          (key) => {
-            if (eventKey === key.toLowerCase()) {
-              handleLetterSelect(key);
+  console.log(usedLetters, "ul");
+
+  const handleKeyPressEvent = useCallback(
+    ({ key: eventKey }) => {
+      if (gameHasEnded) return;
+      switch (eventKey.toLowerCase()) {
+        case "enter":
+          handleEnter();
+          break;
+        case "backspace":
+          handleDelete();
+          break;
+        default:
+          [...keyboardLine1, ...keyboardLine2, ...keyboardLine3].forEach(
+            (key) => {
+              if (eventKey === key.toLowerCase()) {
+                handleLetterSelect(key);
+              }
             }
-          }
-        );
-        break;
-    }
-  });
+          );
+          break;
+      }
+    },
+    [currentAttempt]
+  );
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyPressEvent);
@@ -62,7 +74,7 @@ const Keyboard = () => {
         {keyboardLine3.map((k, idx) => {
           return (
             <div key={idx}>
-              <Key input={k} />
+              <Key input={k} isDisabledKey={usedLetters.includes(k)} />
             </div>
           );
         })}

@@ -3,8 +3,7 @@ import { AppContext } from "../App";
 
 const GameOver = () => {
   const {
-    gameOver: { gameHasEnded, correctWordFound },
-    setGameOver,
+    gameOver: { correctWordFound },
     currentAttempt: { attempt },
     correctWord,
   } = useContext(AppContext);
